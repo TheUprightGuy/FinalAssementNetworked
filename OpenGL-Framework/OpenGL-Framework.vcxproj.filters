@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{e43dddaf-31cb-42cb-9d2e-3d860082cbd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneManager">
+      <UniqueIdentifier>{96fb9764-b856-41f6-9d85-c9db11a39a60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{29bbf93d-d409-4423-afb8-37d9c1f538e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Text">
+      <UniqueIdentifier>{89a07164-7224-46c7-b2c6-dd0f344a2844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{ca07b50c-a404-4be3-a703-e0002807d48d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\ShaderFiles">
+      <UniqueIdentifier>{88d59a5d-fcc0-4990-855b-54aa22aab6f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{f68da2fc-9023-404c-b016-3ebb5a61a0f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{5a9dfe05-ebcf-46e9-abab-d27a0541e6c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh\Meshs">
+      <UniqueIdentifier>{5c36cedc-6058-4f62-9f50-e5f580385988}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lights">
+      <UniqueIdentifier>{a412f0a2-c504-48e9-8b58-28dd3a6c54df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{974bdb2f-0df7-46e4-a3ab-cd6c25c5730b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneManager\Scenes">
+      <UniqueIdentifier>{6cb1f0ff-544f-4d0d-9d90-806c47ec0ecc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera\Cameras">
+      <UniqueIdentifier>{4d7af988-fa33-441e-aafa-adf960f913ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CubeMap">
+      <UniqueIdentifier>{109e255d-ab52-4063-b466-8827c2ad5dfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\CHILDREN">
+      <UniqueIdentifier>{7070b080-e3a2-4e06-a983-c32d2493a95d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menu">
+      <UniqueIdentifier>{f50cd82e-2025-421f-b48e-b0fd0d5edb05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Multiplayer">
+      <UniqueIdentifier>{04aa44f2-9591-4f34-86cd-4cdbb1917126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Clock">
+      <UniqueIdentifier>{0e2a37a5-fbfc-4115-a983-1c6e2f4d3b00}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshManager.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioManager.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLabel.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderLoader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMesh.cpp">
+      <Filter>Mesh\Meshs</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteMesh.cpp">
+      <Filter>Mesh\Meshs</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>SceneManager\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManager.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Camera\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMap.cpp">
+      <Filter>CubeMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Mesh\Meshs</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Objects\CHILDREN</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>Objects\CHILDREN</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="CCubeMap.cpp">
+      <Filter>CubeMap</Filter>
+    </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>Objects\CHILDREN</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>Objects\CHILDREN</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgramManager.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="consoletools.cpp">
+      <Filter>Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="socket.cpp">
+      <Filter>Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="client.cpp">
+      <Filter>Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="inputlinebuffer.cpp">
+      <Filter>Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="network.cpp">
+      <Filter>Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="server.cpp">
+      <Filter>Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="clock.cpp">
+      <Filter>Clock</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MeshManager.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManager.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="TextLabel.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderLoader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMesh.h">
+      <Filter>Mesh\Meshs</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteMesh.h">
+      <Filter>Mesh\Meshs</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>SceneManager\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Camera\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMap.h">
+      <Filter>CubeMap</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="Sphere.h">
+      <Filter>Mesh\Meshs</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Objects\CHILDREN</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>Objects\CHILDREN</Filter>
+    </ClInclude>
+    <ClInclude Include="CCubeMap.h">
+      <Filter>CubeMap</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgramManager.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>Objects\CHILDREN</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Objects\CHILDREN</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="mputils.h">
+      <Filter>Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="networkentity.h">
+      <Filter>Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="consoletools.h">
+      <Filter>Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="socket.h">
+      <Filter>Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="client.h">
+      <Filter>Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLineBuffer.h">
+      <Filter>Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="network.h">
+      <Filter>Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="server.h">
+      <Filter>Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkQueue.h">
+      <Filter>Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="clock.h">
+      <Filter>Clock</Filter>
+    </ClInclude>
+    <ClInclude Include="TextInput.h">
+      <Filter>Objects\CHILDREN</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\FragmentShader.fs">
+      <Filter>Shaders\ShaderFiles</Filter>
+    </None>
+    <None Include="Shaders\Text.fs">
+      <Filter>Shaders\ShaderFiles</Filter>
+    </None>
+    <None Include="Shaders\Text.vs">
+      <Filter>Shaders\ShaderFiles</Filter>
+    </None>
+    <None Include="Shaders\VertexShader.vs">
+      <Filter>Shaders\ShaderFiles</Filter>
+    </None>
+    <None Include="Shaders\PhongLightingFS.fs">
+      <Filter>Shaders\ShaderFiles</Filter>
+    </None>
+    <None Include="Shaders\PhongLightingVS.vs">
+      <Filter>Shaders\ShaderFiles</Filter>
+    </None>
+    <None Include="Shaders\CubeMapFS.fs">
+      <Filter>Shaders\ShaderFiles</Filter>
+    </None>
+    <None Include="Shaders\CubeMapVS.vs">
+      <Filter>Shaders\ShaderFiles</Filter>
+    </None>
+  </ItemGroup>
+</Project>
