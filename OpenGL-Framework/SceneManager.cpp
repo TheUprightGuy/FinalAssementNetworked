@@ -95,7 +95,7 @@ void CSceneManager::Init()
 
 	m_inputPort = new CTextBox("Resources/empty.png", glm::vec2(0.0f, 0.0f));
 	m_inputPort->Scale(glm::vec3(0.3f, 0.1f, 0.0f));
-
+	m_inputPort->RestrictRange(060, 071);
 	//Adding the buttons to menus
 	/******************************************************/
 	startMenu->AddButton(startButton, "startButton");
@@ -141,6 +141,7 @@ void CSceneManager::Render()
 			break;
 		case SERVERCREATE:
 			m_inputPort->Render();
+			m_inputPort->Process();
 			break;
 		case CLIENTCHOOSE:
 			break;
@@ -195,7 +196,7 @@ void CSceneManager::MainProcess()
 
 			if (!tempselection.empty() && !selection.empty())
 			{
-				//startMenu->GetButton(selection)->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
+				startMenu->GetButton(selection)->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
 				startMenu->GetButton(tempselection)->Scale(glm::vec3(0.25f, 0.15f, 0.0f));
 			}
 			if (tempselection.empty())
@@ -213,7 +214,7 @@ void CSceneManager::MainProcess()
 			if (!tempselection.empty() && !selection.empty())
 			{
 				ChooseMPMenu->GetButton(selection)->Scale(glm::vec3(0.15f, 0.1f, 0.0f));
-				ChooseMPMenu->GetButton(tempselection)->Scale(glm::vec3(0.2f, 0.15f, 0.0f));
+				ChooseMPMenu->GetButton(tempselection)->Scale(glm::vec3(0.17f, 0.12f, 0.0f));
 			}
 			else
 			{
@@ -223,6 +224,7 @@ void CSceneManager::MainProcess()
 
 			break;
 		case SERVERCREATE:
+			
 			break;
 		case CLIENTCHOOSE:
 			break;
@@ -276,7 +278,7 @@ void CSceneManager::MainProcess()
 				if (!tempselection.empty() && !selection.empty())
 				{
 					pauseMenu->GetButton(selection)->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-					pauseMenu->GetButton(tempselection)->Scale(glm::vec3(0.25f, 0.15f, 0.0f));
+					pauseMenu->GetButton(tempselection)->Scale(glm::vec3(0.22f, 0.12f, 0.0f));
 				}
 				if (tempselection.empty())
 				{
@@ -302,7 +304,7 @@ void CSceneManager::MainProcess()
 		if (!tempselection.empty() && !selection.empty())
 		{
 			gameOver->GetButton(selection)->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-			gameOver->GetButton(tempselection)->Scale(glm::vec3(0.25f, 0.15f, 0.0f));
+			gameOver->GetButton(tempselection)->Scale(glm::vec3(0.22f, 0.12f, 0.0f));
 		}
 		if (tempselection.empty())
 		{
@@ -373,7 +375,7 @@ void CSceneManager::MainProcess()
 		bTap = false;
 	}
 	/**********************************************/
-
+	1021111111111111111111111144110
 	if (!tempselection.empty() )
 	{
 		selection = tempselection;

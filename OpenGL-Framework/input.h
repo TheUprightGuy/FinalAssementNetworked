@@ -10,14 +10,31 @@ public:
 
 	~CInput();
 
-	InputState GetCurrentState() { return(m_CurrentState); }
+	InputState GetCurrentState() 
+	{
+		if (m_CurrentState == INPUT_FIRST_PRESS)
+		{
+			m_CurrentState = INPUT_HOLD;
+			return (INPUT_FIRST_PRESS);
+		}
+
+		return (m_CurrentState);
+	}
 
 	//Keyboard states
 	/*********************************************/
 	InputState GetKeyState(char key)
 	{
+		if (KeyState[key] == INPUT_FIRST_PRESS)
+		{
+			KeyState[key] = INPUT_HOLD;
+			m_CurrentState = INPUT_HOLD;
+			return (INPUT_FIRST_PRESS);
+		}
+
 		return (KeyState[key]);
 	}
+
 	void KeyboardUp(unsigned char key, int x, int y)
 	{
 		cLastKeyPressed = key;
@@ -29,8 +46,12 @@ public:
 	{
 		cLastKeyPressed = key;
 
-		KeyState[key] = INPUT_HOLD;
-		m_CurrentState = INPUT_HOLD;
+		if (KeyState[key] == INPUT_RELEASE) 
+		{ 
+			KeyState[key] = INPUT_FIRST_PRESS; 
+			m_CurrentState = INPUT_FIRST_PRESS;
+		}
+		
 	}
 
 	
@@ -75,8 +96,12 @@ public:
 		s_pInput = nullptr;
 	}
 
+	char cLastKeyPressed;
+	InputState m_CurrentState;
 	//Singleton setup
 	/*********************************************/
+
+
 protected:
 	static CInput* s_pInput;
 
@@ -92,8 +117,7 @@ private:
 
 	glm::vec3 m_MousePos;
 
-	char cLastKeyPressed;
-	InputState m_CurrentState;
+	
 
 };
 
