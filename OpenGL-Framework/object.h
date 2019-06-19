@@ -28,6 +28,7 @@ public:
 
 	void Translate(glm::vec3 _newPos);
 	void Scale(glm::vec3 _scale);
+
 	void Rotation(float _fDeg, glm::vec3 _rotAxis) 
 	{ 
 		m_RotationDegrees = _fDeg;

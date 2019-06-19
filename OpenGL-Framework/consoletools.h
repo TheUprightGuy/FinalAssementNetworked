@@ -6,7 +6,6 @@
 *
 */
 
-
 #ifndef __CONSOLE_TOOLS_H__
 #define __CONSOLE_TOOLS_H__
 

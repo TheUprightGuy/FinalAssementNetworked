@@ -13,11 +13,14 @@
 class CButton : public CObject
 {
 public:
-	CButton(std::string _ButtonTexture = "Resources/Rayman.jpg");
+	CButton(std::string _ButtonTexture = "Resources/Rayman.jpg", float _increase = 0.02f);
 	~CButton() {}
 
 	bool CheckCollision();
 private:
+	glm::vec3 defaultScale;
+	bool default;
+	float buttonIncrease;
 };
 
 #endif // !__BUTTON_H__

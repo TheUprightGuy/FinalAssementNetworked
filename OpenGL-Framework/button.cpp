@@ -2,15 +2,23 @@
 #include <iostream>
 
 
-CButton::CButton(std::string _ButtonTexture)
-	:CObject::CObject(DEFAULT, _ButtonTexture, MESH_2D_SPRITE, CCameraManager::GetInstance().GetOrthoCam())
+CButton::CButton(std::string _ButtonTexture, float _increase)
+	:CObject::CObject(DEFAULT, _ButtonTexture, MESH_2D_SPRITE, CCameraManager::GetInstance().GetOrthoCam()),
+	buttonIncrease(_increase)
 {
-
+	default = false;
 }
 
 
 bool CButton::CheckCollision()
 {
+	
+	if (!default)
+	{
+		defaultScale = GetScale();
+		default = true;
+	}
+	
 	glm::vec3 objPos = GetPos();
 	glm::vec3 objScale = GetScale();
 
@@ -24,10 +32,12 @@ bool CButton::CheckCollision()
 	if ((mouseCoords.x > (objPos.x - objScale.x)) && (mouseCoords.x < (objPos.x + objScale.x)) &&
 		(mouseCoords.y > (objTop)) && (mouseCoords.y < (objBot) ) )
 	{
+		Scale(defaultScale + buttonIncrease);
 		return true;
 	}
 	else
 	{
+		Scale(defaultScale);
 		return false;
 	}
 }

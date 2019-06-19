@@ -27,7 +27,7 @@
 #include <thread>
 
 //Local Includes
-#include "consoletools.h"
+//#include "consoletools.h"
 #include "network.h"
 #include "client.h"
 #include "server.h"
@@ -63,9 +63,12 @@ public:
 
 	void SPProcess();
 
-	void MPStartUp();
+	void MPStartUp(bool isClient);
 	void MPProcess();
 	
+	std::string ServerPort;
+	std::string ServerName;
+
 protected:
 	static CSceneManager* s_pSceneManager;
 
@@ -97,7 +100,13 @@ private:
 	CMenu* gameOver;
 	CMenu* pauseMenu;
 	CMenu* ChooseMPMenu;
+	CMenu* EnterPort;
 
+	bool NameEnter;
+	CButton* m_confirm;
+	CTextBox* m_ServerName;
+
+	
 	CTextBox* m_inputPort;
 	MenuType mainType;
 	bool bPaused;

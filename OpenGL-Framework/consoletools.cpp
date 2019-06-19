@@ -5,7 +5,7 @@
 *	@brief	Some simple tools to get input from the user on a windows console.
 *
 */
-
+#include "SceneManager.h"
 #include "consoletools.h"
 
 char* GetLineFromConsole(char* pBuffer, int iNumChars)
@@ -128,9 +128,14 @@ unsigned short QueryPortNumber(unsigned short uDefault)
 	{
 		char Port[128];
 
+		std::string sp = CSceneManager::GetInstance().ServerPort;
+		//std::cout << "Enter port number (or just press Enter for default): ";
+		//GetLineFromConsole(Port);
 
-		std::cout << "Enter port number (or just press Enter for default): ";
-		GetLineFromConsole(Port);
+		for (int i = 0; i < sp.size(); i++)
+		{
+			Port[i] = sp[i];
+		}
 		iPort = atoi(Port);
 		if (iPort != 0)
 		{
@@ -138,7 +143,7 @@ unsigned short QueryPortNumber(unsigned short uDefault)
 		}
 		if (uDefault != 0)
 		{
-			//std::cout << "Using default " << uDefault << std::endl;
+			std::cout << "Using default " << uDefault << std::endl;
 			return uDefault;
 		}
 		std::cout << "Didn't understand that port number" << std::endl;

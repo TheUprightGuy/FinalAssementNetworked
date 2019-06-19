@@ -38,6 +38,7 @@ void CSceneManager::Init()
 	pauseMenu = new CMenu();
 	MPMenu = new CMenu();
 	ChooseMPMenu = new CMenu();
+	EnterPort = new CMenu();
 
 	m_pClock = new CClock();
 	m_pClock->Initialise();
@@ -46,6 +47,7 @@ void CSceneManager::Init()
 	CGame::GetInstance().init();
 	i_Play = 0;
 	bPaused = false;
+	NameEnter = false;
 
 	//GLuint UIprog = CProgrammerManager::GetInstance().GetProgram(DEFAULT);
 	backGround = new CObject(DEFAULT, "Resources/menucircle.png", MESH_2D_SPRITE, CCameraManager::GetInstance().GetOrthoCam());
@@ -91,11 +93,27 @@ void CSceneManager::Init()
 
 	CButton* hostButton = new CButton("Resources/Host.png");
 	hostButton->Scale(glm::vec3(0.15f, 0.1f, 0.0f));
-	hostButton->Translate(glm::vec3(0.0f, -0.15f, 0.0f));
+	hostButton->Translate(glm::vec3(0.0f, -0.17f, 0.0f));
 
-	m_inputPort = new CTextBox("Resources/empty.png", glm::vec2(0.0f, 0.0f));
+	CButton* enterButton = new CButton("Resources/enter.png");
+	enterButton->Scale(glm::vec3(0.12f, 0.07f, 0.0f));
+	enterButton->Translate(glm::vec3(0.07f, -0.19f, 0.0f));
+
+	CButton* defaultButton = new CButton("Resources/Default.png");
+	defaultButton->Scale(glm::vec3(0.12f, 0.07f, 0.0f));
+	defaultButton->Translate(glm::vec3(-0.15f, -0.19f, 0.0f));
+
+	m_confirm  = new CButton("Resources/enter.png");
+	m_confirm->Scale(glm::vec3(0.15f, 0.07f, 0.0f));
+	m_confirm->Translate(glm::vec3(0.0f, -0.19f, 0.0f));
+
+	m_ServerName = new CTextBox("Resources/empty.png", glm::vec2(0.0f, 0.0f), "Enter Server Name");
+	m_ServerName->Scale(glm::vec3(0.3f, 0.1f, 0.0f));
+	
+	m_inputPort = new CTextBox("Resources/empty.png", glm::vec2(0.0f, 0.0f), "Enter Port Number");
 	m_inputPort->Scale(glm::vec3(0.3f, 0.1f, 0.0f));
-	m_inputPort->RestrictRange(060, 071);
+	m_inputPort->RestrictRange(056, 072);
+
 	//Adding the buttons to menus
 	/******************************************************/
 	startMenu->AddButton(startButton, "startButton");
@@ -105,6 +123,9 @@ void CSceneManager::Init()
 
 	ChooseMPMenu->AddButton(joinButton, "joinButton");
 	ChooseMPMenu->AddButton(hostButton, "hostButton");
+	
+	EnterPort->AddButton(enterButton, "enterButton");
+	EnterPort->AddButton(defaultButton, "defaultButton");
 	
 	gameOver->AddButton(exitButton, "exitButton");
 	gameOver->AddButton(menuButton, "menuButton");
@@ -140,8 +161,19 @@ void CSceneManager::Render()
 			ChooseMPMenu->Render();
 			break;
 		case SERVERCREATE:
-			m_inputPort->Render();
-			m_inputPort->Process();
+
+			if (NameEnter)
+			{
+				m_confirm->Render();
+				m_ServerName->Render();
+			}
+			else
+			{
+				EnterPort->Render();
+				m_inputPort->Render();
+				m_inputPort->Process();
+			}
+
 			break;
 		case CLIENTCHOOSE:
 			break;
@@ -193,43 +225,24 @@ void CSceneManager::MainProcess()
 		{
 		case MAIN:
 			tempselection = startMenu->GetSelection();
-
-			if (!tempselection.empty() && !selection.empty())
-			{
-				startMenu->GetButton(selection)->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-				startMenu->GetButton(tempselection)->Scale(glm::vec3(0.25f, 0.15f, 0.0f));
-			}
-			if (tempselection.empty())
-			{
-				startMenu->GetButton("startButton")->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-				startMenu->GetButton("multiButton")->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-				startMenu->GetButton("settingsButton")->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-				startMenu->GetButton("exitButton")->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-			}
-
 			break;
 		case MULTI:
 			tempselection = ChooseMPMenu->GetSelection();
-
-			if (!tempselection.empty() && !selection.empty())
+			break;
+		case SERVERCREATE:
+			if (NameEnter)
 			{
-				ChooseMPMenu->GetButton(selection)->Scale(glm::vec3(0.15f, 0.1f, 0.0f));
-				ChooseMPMenu->GetButton(tempselection)->Scale(glm::vec3(0.17f, 0.12f, 0.0f));
+				m_ServerName->Process();
+				if (m_confirm->CheckCollision() && CInput::GetInstance().GetMouseState(0) == INPUT_HOLD && !m_ServerName->GetText().empty())
+				{
+					ServerName = m_ServerName->GetText();
+					mainType = LOBBY;
+				}
 			}
 			else
 			{
-				ChooseMPMenu->GetButton("joinButton")->Scale(glm::vec3(0.15f, 0.1f, 0.0f));
-				ChooseMPMenu->GetButton("hostButton")->Scale(glm::vec3(0.15f, 0.1f, 0.0f));
+				tempselection = EnterPort->GetSelection();
 			}
-
-			break;
-		case SERVERCREATE:
-			
-			break;
-		case CLIENTCHOOSE:
-			break;
-		case LOBBY:
-			break;
 		case SETTING:
 			break;
 		default:
@@ -275,16 +288,6 @@ void CSceneManager::MainProcess()
 				glutSetCursor(GLUT_CURSOR_INHERIT);
 				tempselection = pauseMenu->GetSelection();
 
-				if (!tempselection.empty() && !selection.empty())
-				{
-					pauseMenu->GetButton(selection)->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-					pauseMenu->GetButton(tempselection)->Scale(glm::vec3(0.22f, 0.12f, 0.0f));
-				}
-				if (tempselection.empty())
-				{
-					pauseMenu->GetButton("menuButton")->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-					pauseMenu->GetButton("startoverButton")->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-				}
 			}
 		}
 		else
@@ -300,18 +303,6 @@ void CSceneManager::MainProcess()
 	{
 		glutSetCursor(GLUT_CURSOR_INHERIT);
 		tempselection = gameOver->GetSelection();
-
-		if (!tempselection.empty() && !selection.empty())
-		{
-			gameOver->GetButton(selection)->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-			gameOver->GetButton(tempselection)->Scale(glm::vec3(0.22f, 0.12f, 0.0f));
-		}
-		if (tempselection.empty())
-		{
-			gameOver->GetButton("exitButton")->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-			gameOver->GetButton("menuButton")->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-			gameOver->GetButton("startoverButton")->Scale(glm::vec3(0.2f, 0.1f, 0.0f));
-		}
 	}
 	/**********************************************/
 
@@ -368,6 +359,18 @@ void CSceneManager::MainProcess()
 		{
 			mainType = SERVERCREATE;
 		}
+		else if (tempselection == "enterButton")
+		{
+			NameEnter = true;
+			ServerPort = m_inputPort->GetText();
+			MPStartUp(false);
+		}
+		else if (tempselection == "defaultButton")
+		{
+			ServerPort = "";
+			NameEnter = true;
+			MPStartUp(false);
+		}
 
 	}
 	else if (CInput::GetInstance().GetMouseState(0) == INPUT_RELEASE)
@@ -375,7 +378,6 @@ void CSceneManager::MainProcess()
 		bTap = false;
 	}
 	/**********************************************/
-	1021111111111111111111111144110
 	if (!tempselection.empty() )
 	{
 		selection = tempselection;
@@ -387,36 +389,24 @@ void CSceneManager::SPProcess()
 {
 }
 
-void CSceneManager::MPStartUp()
+void CSceneManager::MPStartUp(bool isClient)
 {
 	_rNetwork.StartUp();
-	_ucChoice = QueryOption("Do you want to run a client or server (C/S)?", "CS");
-	switch (_ucChoice)
-	{
-	case 'C':
+
+	if (isClient)
 	{
 		_eNetworkEntityType = CLIENT;
 		CGame::GetInstance().SetGameMode(bPlayMode, CLIENT);
-		break;
 	}
-	case 'S':
+	else
 	{
 		_eNetworkEntityType = SERVER;
 		CGame::GetInstance().SetGameMode(bPlayMode, SERVER);
-		break;
 	}
-	default:
-	{
-		std::cout << "This is not a valid option" << std::endl;
-		return;
-		break;
-	}
-	}
-
 	if (!_rNetwork.GetInstance().Initialise(_eNetworkEntityType))
 	{
 		std::cout << "Unable to initialise the Network........Press any key to continue......";
-		_getch();
+		//_getch();
 		return;
 	}
 
