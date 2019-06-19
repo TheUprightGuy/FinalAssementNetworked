@@ -63,7 +63,7 @@ public:
 
 	void SPProcess();
 
-	void MPStartUp(bool isClient);
+	bool MPStartUp(bool isClient);
 	void MPProcess();
 	
 	std::string ServerPort;
@@ -113,6 +113,7 @@ private:
 	
 	CLight* myLight;
 
+	std::vector<TextLabel*> m_servers;
 	//Multiplayer stuffs
 	char* _pcPacketData;
 	char _cIPAddress[MAX_ADDRESS_LENGTH]; // An array to hold the IP Address as a string

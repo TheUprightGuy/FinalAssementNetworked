@@ -25,6 +25,7 @@ public:
 		if (CInput::GetInstance().GetMouseState(0) == INPUT_HOLD)
 		{
 			boxInFocus = CheckCollision();
+
 		}
 	}
 
@@ -37,10 +38,10 @@ public:
 		float timetime = glutGet(GLUT_ELAPSED_TIME) - time;
 
 		//std::cout << timetime << std::endl;
-		if (boxInFocus && CInput::GetInstance().GetCurrentState() == INPUT_HOLD && !keyPressed)
+		if (boxInFocus && CInput::GetInstance().GetCurrentState() == INPUT_FIRST_PRESS)
 		{
 			char lastKey = CInput::GetInstance().cLastKeyPressed;
-			if (lastKey == 010 && m_inputString.length() > 0)
+			if (lastKey == 010 && m_inputString.length() >= 0)
 			{
 				m_inputString.pop_back();
 			}

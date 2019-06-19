@@ -30,7 +30,12 @@
 
 // Constants
 
-
+struct BroadCastPacket
+{
+	sockaddr_in ServerAddr;
+	int playerNum;
+	std::string serverName;
+};
 //Forward Declaration
 class CSocket;
 
@@ -44,6 +49,8 @@ public:
 	// Methods
 	
 	virtual bool Initialise(); //Implicit in the intialization is the creation and binding of the socket
+	virtual bool QueryServerList();
+
 	virtual bool SendData(char* _pcDataToSend);
 	virtual void ReceiveData(char* _pcBufferToReceiveData);
 	virtual void ProcessData(char* _pcDataReceived);
@@ -56,6 +63,7 @@ public:
 	//Qs7 : Broadcast to Detect Servers
 	bool BroadcastForServers();
 
+	std::vector<BroadCastPacket> m_vecServerAddr;
 private:
 	// Question 7 : Broadcast to Detect Servers
 	void ReceiveBroadcastMessages(char* _pcBufferToReceiveData);
@@ -75,7 +83,6 @@ private:
 	std::map<std::string, std::string> m_pConnectedPlayers;
 	//Question 7
 	//A vector to hold all the servers found after broadcasting
-	std::vector<sockaddr_in> m_vecServerAddr;
 	bool m_bDoBroadcast;
 };
 

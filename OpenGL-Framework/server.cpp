@@ -142,7 +142,7 @@ bool CServer::SendToAll(char* _pcDataToSend)
 	//iNumBytes;
 	if (_iBytesToSend != iNumBytes)
 	{
-		std::cout << "There was an error in sending data from client to server" << std::endl;
+		//std::cout << "There was an error in sending data from client to server" << std::endl;
 		return false;
 	}
 	return true;
@@ -286,8 +286,12 @@ void CServer::ProcessData(char* _pcDataReceived)
 	{
 		std::cout << "Received a broadcast packet" << std::endl;
 		//Just send out a packet to the back to the client again which will have the server's IP and port in it's sender fields
-		_packetToSend.Serialize(BROADCAST, "I'm here!");
+		std::string serverInfo = ToString(m_pConnectedClients->size());
+		serverInfo += '/';
+		serverInfo += m_name;
+		_packetToSend.Serialize(BROADCAST, const_cast<char*>(serverInfo.c_str()));
 		SendData(_packetToSend.PacketData);
+
 		break;
 	}
 	case KEEPALIVE:

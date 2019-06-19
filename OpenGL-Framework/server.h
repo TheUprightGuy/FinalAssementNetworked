@@ -62,12 +62,16 @@ public:
 
 	CWorkQueue<char*>* GetWorkQueue();
 	//Qs 2: Function to add clients to the map.
+
+	void SetName(std::string _name) { m_name = _name; }
 private:
 	bool AddClient(std::string _strClientName);
 
 
 
 private:
+
+	std::string m_name;
 	//A Buffer to contain all packet data for the server
 	char* m_pcPacketData;
 	//A server has a socket object to create the UDP socket at its end.

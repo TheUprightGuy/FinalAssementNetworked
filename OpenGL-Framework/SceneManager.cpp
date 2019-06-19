@@ -48,7 +48,7 @@ void CSceneManager::Init()
 	i_Play = 0;
 	bPaused = false;
 	NameEnter = false;
-
+	ServerPort = "";
 	//GLuint UIprog = CProgrammerManager::GetInstance().GetProgram(DEFAULT);
 	backGround = new CObject(DEFAULT, "Resources/menucircle.png", MESH_2D_SPRITE, CCameraManager::GetInstance().GetOrthoCam());
 	backGround->Scale(glm::vec3(0.65f, 0.9f, 0.0f));
@@ -176,6 +176,11 @@ void CSceneManager::Render()
 
 			break;
 		case CLIENTCHOOSE:
+			for (auto i: m_servers)
+			{
+				i->Render();
+			}
+
 			break;
 		case LOBBY:
 			break;
@@ -217,6 +222,8 @@ void CSceneManager::MainProcess()
 	static std::string selection;
 	std::string tempselection;
 	
+	
+
 	//main menu
 	/**********************************************/
 	if (i_Play == 0)
@@ -229,6 +236,41 @@ void CSceneManager::MainProcess()
 		case MULTI:
 			tempselection = ChooseMPMenu->GetSelection();
 			break;
+		case CLIENTCHOOSE:
+		{
+			static float time = glutGet(GLUT_ELAPSED_TIME);
+			float timetime = glutGet(GLUT_ELAPSED_TIME) - time;
+
+			if (timetime > 250)
+			{
+				//mainType = CLIENTCHOOSE;
+				if (_pClient->QueryServerList())
+				{
+					m_servers.clear();
+					for (int i = 0; i < _pClient->m_vecServerAddr.size(); i++)
+					{
+						float pixelX = (0.0f + 1.22f) * 0.5 * glutGet(GLUT_WINDOW_WIDTH);
+						float pixelY = ((1.5f) - i  * 0.2) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
+						std::string finalOut = _pClient->m_vecServerAddr[i].serverName + " - " + ToString(_pClient->m_vecServerAddr[i].ServerAddr) + " - " + ToString(_pClient->m_vecServerAddr[i].playerNum) + "/4 players";
+						TextLabel* temp = new TextLabel(finalOut, "Resources/Fonts/arial.ttf", { pixelX , pixelY });
+						temp->SetScale(0.5f);
+						m_servers.push_back(temp);
+					}
+				}
+				time = glutGet(GLUT_ELAPSED_TIME);
+			}
+
+			MPProcess();
+
+			if (_pClient->m_vecServerAddr.size() == 0)
+			{
+				//std::cout << "No servers found" << std::endl;
+				//mainType = MAIN;
+			}
+
+		}
+		break;
+
 		case SERVERCREATE:
 			if (NameEnter)
 			{
@@ -236,6 +278,7 @@ void CSceneManager::MainProcess()
 				if (m_confirm->CheckCollision() && CInput::GetInstance().GetMouseState(0) == INPUT_HOLD && !m_ServerName->GetText().empty())
 				{
 					ServerName = m_ServerName->GetText();
+					_pServer->SetName(ServerName);
 					mainType = LOBBY;
 				}
 			}
@@ -243,6 +286,12 @@ void CSceneManager::MainProcess()
 			{
 				tempselection = EnterPort->GetSelection();
 			}
+			break;
+		case LOBBY:
+		{
+			MPProcess();
+		}
+		break;
 		case SETTING:
 			break;
 		default:
@@ -359,6 +408,39 @@ void CSceneManager::MainProcess()
 		{
 			mainType = SERVERCREATE;
 		}
+		else if (tempselection == "joinButton")
+		{
+			static bool isStarted = false;
+			if (!isStarted)
+			{
+				MPStartUp(true);
+				isStarted = true;
+			}
+			
+			int numOfTries = 5;
+			for (int i = 0; i < numOfTries; i++)
+			{
+				if (_pClient->QueryServerList())
+				{
+					mainType = CLIENTCHOOSE;
+					for (int i = 0; i < _pClient->m_vecServerAddr.size(); i++)
+					{
+						
+						float pixelX = (0.0f + 1.22f) * 0.5 * glutGet(GLUT_WINDOW_WIDTH);
+						float pixelY = ((1.5f) - i * 0.2) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
+
+						std::string finalOut = _pClient->m_vecServerAddr[i].serverName + " - " + ToString(_pClient->m_vecServerAddr[i].ServerAddr) + " - " + ToString(_pClient->m_vecServerAddr[i].playerNum) + "/4 players";
+						TextLabel* temp = new TextLabel(finalOut, "Resources/Fonts/arial.ttf", { pixelX , pixelY });
+						temp->SetScale(0.5f);
+						m_servers.push_back(temp);
+					}
+					break;
+				}
+				Sleep(50);
+			}
+			
+
+		}
 		else if (tempselection == "enterButton")
 		{
 			NameEnter = true;
@@ -389,7 +471,7 @@ void CSceneManager::SPProcess()
 {
 }
 
-void CSceneManager::MPStartUp(bool isClient)
+bool CSceneManager::MPStartUp(bool isClient)
 {
 	_rNetwork.StartUp();
 
@@ -403,20 +485,20 @@ void CSceneManager::MPStartUp(bool isClient)
 		_eNetworkEntityType = SERVER;
 		CGame::GetInstance().SetGameMode(bPlayMode, SERVER);
 	}
-	if (!_rNetwork.GetInstance().Initialise(_eNetworkEntityType))
+
+	if (!_rNetwork.GetInstance().Initialise(_eNetworkEntityType) )
 	{
 		std::cout << "Unable to initialise the Network........Press any key to continue......";
 		//_getch();
-		return;
+		
+		return false;
 	}
 
 	//Run receive on a separate thread so that it does not block the main client thread.
 	if (_eNetworkEntityType == CLIENT) //if network entity is a client
 	{
-
 		_pClient = static_cast<CClient*>(_rNetwork.GetInstance().GetNetworkEntity());
 		_ClientReceiveThread = std::thread(&CClient::ReceiveData, _pClient, std::ref(_pcPacketData));
-
 	}
 
 	//Run receive of server also on a separate thread 
@@ -427,6 +509,7 @@ void CSceneManager::MPStartUp(bool isClient)
 		_ServerReceiveThread = std::thread(&CServer::ReceiveData, _pServer, std::ref(_pcPacketData));
 
 	}
+	return true;
 }
 
 void CSceneManager::MPProcess()
@@ -453,28 +536,11 @@ void CSceneManager::MPProcess()
 			//On server tick
 			if (fCount > fTime + 0.1666f)
 			{
-				float playerRot;
-				glm::vec3 playerPos;
-
-				//Get the game data
-				CGame::GetInstance().GetPlayerData(playerPos, playerRot);
-
-				std::ostringstream oss;
-				oss << playerPos.x;
-				oss << " ";
-				oss << playerPos.z;
-				oss << " ";
-				oss << playerRot;
-
-				std::string _strToSend = oss.str();
-				const char* _pcToSend = _strToSend.c_str();
-
-				int _iMessageSize = static_cast<int>(strlen(_pcToSend));
 
 				//Put the message into a packet structure
 				TPacket _packet;
-				_packet.Serialize(PLAYER_UPDATE, const_cast<char*>(_pcToSend)); //Hardcoded username; change to name as taken in via user input.
-				_rNetwork.GetInstance().GetNetworkEntity()->SendData(_packet.PacketData); //Send game data to server
+				//_packet.Serialize(PLAYER_UPDATE, const_cast<char*>(_pcToSend)); //Hardcoded username; change to name as taken in via user input.
+				//_rNetwork.GetInstance().GetNetworkEntity()->SendData(_packet.PacketData); //Send game data to server
 
 				////Clear the Input Buffer
 				//_InputBuffer.ClearString();

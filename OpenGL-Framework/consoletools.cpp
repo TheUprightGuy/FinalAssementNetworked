@@ -131,7 +131,6 @@ unsigned short QueryPortNumber(unsigned short uDefault)
 		std::string sp = CSceneManager::GetInstance().ServerPort;
 		//std::cout << "Enter port number (or just press Enter for default): ";
 		//GetLineFromConsole(Port);
-
 		for (int i = 0; i < sp.size(); i++)
 		{
 			Port[i] = sp[i];

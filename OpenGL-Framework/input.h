@@ -37,7 +37,7 @@ public:
 
 	void KeyboardUp(unsigned char key, int x, int y)
 	{
-		cLastKeyPressed = key;
+		//cLastKeyPressed = key;
 
 		KeyState[key] = INPUT_RELEASE;
 		m_CurrentState = INPUT_RELEASE;
