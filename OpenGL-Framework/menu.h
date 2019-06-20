@@ -11,6 +11,7 @@ public:
 	CMenu(){}
 	~CMenu()
 	{
+		m_pMenu.clear();
 	}
 
 	void AddButton(CButton* m_pButton, std::string _key) { m_pMenu[_key] = m_pButton; }

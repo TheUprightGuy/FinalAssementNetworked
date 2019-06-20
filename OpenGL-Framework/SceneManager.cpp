@@ -39,6 +39,7 @@ void CSceneManager::Init()
 	MPMenu = new CMenu();
 	ChooseMPMenu = new CMenu();
 	EnterPort = new CMenu();
+	ServerList = new CMenu();
 
 	m_pClock = new CClock();
 	m_pClock->Initialise();
@@ -176,9 +177,10 @@ void CSceneManager::Render()
 
 			break;
 		case CLIENTCHOOSE:
-			for (auto i: m_servers)
+			ServerList->Render();
+			for (auto i: m_servervec)
 			{
-				i->Render();
+				i.second->Render();
 			}
 
 			break;
@@ -241,20 +243,33 @@ void CSceneManager::MainProcess()
 			static float time = glutGet(GLUT_ELAPSED_TIME);
 			float timetime = glutGet(GLUT_ELAPSED_TIME) - time;
 
+			ServerList->GetSelection();
+
 			if (timetime > 250)
 			{
 				//mainType = CLIENTCHOOSE;
 				if (_pClient->QueryServerList())
 				{
+					delete ServerList;
+					ServerList = new CMenu();
+
 					m_servers.clear();
 					for (int i = 0; i < _pClient->m_vecServerAddr.size(); i++)
 					{
+						CButton* defaultButton = new CButton("Resources/empty.png");
+						defaultButton->Scale(glm::vec3(0.3f, 0.05f, 0.0f));
+						defaultButton->Translate(glm::vec3(0.0f, (-(i  * 0.1f)) + 0.1f, 0.0f));
+
+						ServerList->AddButton(defaultButton, _pClient->m_vecServerAddr[i].serverName);
+
 						float pixelX = (0.0f + 1.22f) * 0.5 * glutGet(GLUT_WINDOW_WIDTH);
-						float pixelY = ((1.5f) - i  * 0.2) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
+						float pixelY = ((1.45f) - i * 0.125) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
 						std::string finalOut = _pClient->m_vecServerAddr[i].serverName + " - " + ToString(_pClient->m_vecServerAddr[i].ServerAddr) + " - " + ToString(_pClient->m_vecServerAddr[i].playerNum) + "/4 players";
 						TextLabel* temp = new TextLabel(finalOut, "Resources/Fonts/arial.ttf", { pixelX , pixelY });
 						temp->SetScale(0.5f);
-						m_servers.push_back(temp);
+
+						m_servervec.insert(std::pair< std::string, TextLabel* >(_pClient->m_vecServerAddr[i].serverName, temp));
+						//m_servers.push_back(temp);
 					}
 				}
 				time = glutGet(GLUT_ELAPSED_TIME);
@@ -420,19 +435,28 @@ void CSceneManager::MainProcess()
 			int numOfTries = 5;
 			for (int i = 0; i < numOfTries; i++)
 			{
+				mainType = CLIENTCHOOSE;
 				if (_pClient->QueryServerList())
 				{
-					mainType = CLIENTCHOOSE;
+					
 					for (int i = 0; i < _pClient->m_vecServerAddr.size(); i++)
 					{
-						
+						CButton* defaultButton = new CButton("Resources/empty.png");
+						defaultButton->Scale(glm::vec3(0.3f, 0.05f, 0.0f));
+						defaultButton->Translate(glm::vec3(0.0f, (i  * 0.1) + 0.1f, 0.0f));
+
+						ServerList->AddButton(defaultButton, _pClient->m_vecServerAddr[i].serverName);
+
 						float pixelX = (0.0f + 1.22f) * 0.5 * glutGet(GLUT_WINDOW_WIDTH);
-						float pixelY = ((1.5f) - i * 0.2) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
+						float pixelY = ((1.45f) - i * 0.125) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
 
 						std::string finalOut = _pClient->m_vecServerAddr[i].serverName + " - " + ToString(_pClient->m_vecServerAddr[i].ServerAddr) + " - " + ToString(_pClient->m_vecServerAddr[i].playerNum) + "/4 players";
 						TextLabel* temp = new TextLabel(finalOut, "Resources/Fonts/arial.ttf", { pixelX , pixelY });
 						temp->SetScale(0.5f);
-						m_servers.push_back(temp);
+
+						m_servervec.insert(std::pair< std::string, TextLabel* >(_pClient->m_vecServerAddr[i].serverName, temp));
+
+						//m_servers.push_back({ _pClient->m_vecServerAddr[i].serverName, temp});
 					}
 					break;
 				}

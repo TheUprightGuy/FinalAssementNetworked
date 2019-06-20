@@ -46,7 +46,11 @@ enum MenuType
 	SETTING
 };
 
-
+struct ServerButtons
+{
+	std::string tiedToButton;
+	TextLabel* m_text;
+};
 class CSceneManager
 {
 public:
@@ -101,7 +105,7 @@ private:
 	CMenu* pauseMenu;
 	CMenu* ChooseMPMenu;
 	CMenu* EnterPort;
-
+	CMenu* ServerList;
 	bool NameEnter;
 	CButton* m_confirm;
 	CTextBox* m_ServerName;
@@ -113,7 +117,8 @@ private:
 	
 	CLight* myLight;
 
-	std::vector<TextLabel*> m_servers;
+	std::vector<ServerButtons> m_servers;
+	std::map<std::string, TextLabel*> m_servervec;
 	//Multiplayer stuffs
 	char* _pcPacketData;
 	char _cIPAddress[MAX_ADDRESS_LENGTH]; // An array to hold the IP Address as a string
