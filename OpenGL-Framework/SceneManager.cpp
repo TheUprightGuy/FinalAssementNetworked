@@ -177,14 +177,27 @@ void CSceneManager::Render()
 
 			break;
 		case CLIENTCHOOSE:
+			if (!NameEnter)
+			{
+				ServerList->Render();
+				for (auto i : m_servervec)
+				{
+					i.second->Render();
+				}
+			}
+			else
+			{
+				m_confirm->Render();
+				m_ServerName->Render();
+			}
+			
+			break;
+		case LOBBY:
 			ServerList->Render();
-			for (auto i: m_servervec)
+			for (auto i : m_servervec)
 			{
 				i.second->Render();
 			}
-
-			break;
-		case LOBBY:
 			break;
 		case SETTING:
 			break;
@@ -240,49 +253,70 @@ void CSceneManager::MainProcess()
 			break;
 		case CLIENTCHOOSE:
 		{
-			static float time = glutGet(GLUT_ELAPSED_TIME);
-			float timetime = glutGet(GLUT_ELAPSED_TIME) - time;
-
-			ServerList->GetSelection();
-
-			if (timetime > 250)
+			static int iServerNum = 0;
+			if (!NameEnter)
 			{
-				//mainType = CLIENTCHOOSE;
-				if (_pClient->QueryServerList())
-				{
-					delete ServerList;
-					ServerList = new CMenu();
+				static float time = glutGet(GLUT_ELAPSED_TIME);
+				float timetime = glutGet(GLUT_ELAPSED_TIME) - time;
 
-					m_servers.clear();
+
+				if (timetime > 250)
+				{
+					//mainType = CLIENTCHOOSE;
+					if (_pClient->QueryServerList())
+					{
+						delete ServerList;
+						ServerList = new CMenu();
+
+						m_servervec.clear();
+						for (int i = 0; i < _pClient->m_vecServerAddr.size(); i++)
+						{
+							CButton* defaultButton = new CButton("Resources/empty.png");
+							defaultButton->Scale(glm::vec3(0.3f, 0.05f, 0.0f));
+							defaultButton->Translate(glm::vec3(0.0f, (-(i  * 0.1f)) + 0.1f, 0.0f));
+
+							ServerList->AddButton(defaultButton, _pClient->m_vecServerAddr[i].serverName);
+
+							float pixelX = (0.0f + 1.22f) * 0.5 * glutGet(GLUT_WINDOW_WIDTH);
+							float pixelY = ((1.45f) - i * 0.125) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
+							std::string finalOut = _pClient->m_vecServerAddr[i].serverName + " - " + ToString(_pClient->m_vecServerAddr[i].ServerAddr) + " - " + ToString(_pClient->m_vecServerAddr[i].playerNum) + "/4 players";
+							TextLabel* temp = new TextLabel(finalOut, "Resources/Fonts/arial.ttf", { pixelX , pixelY });
+							temp->SetScale(0.5f);
+
+							m_servervec.insert(std::pair< std::string, TextLabel* >(_pClient->m_vecServerAddr[i].serverName, temp));
+							//m_servers.push_back(temp);
+						}
+					}
+					time = glutGet(GLUT_ELAPSED_TIME);
+				}
+
+				MPProcess();
+
+				std::string chosen = ServerList->GetSelection();
+
+				if (!chosen.empty() && CInput::GetInstance().GetMouseState(0) == INPUT_HOLD)
+				{
 					for (int i = 0; i < _pClient->m_vecServerAddr.size(); i++)
 					{
-						CButton* defaultButton = new CButton("Resources/empty.png");
-						defaultButton->Scale(glm::vec3(0.3f, 0.05f, 0.0f));
-						defaultButton->Translate(glm::vec3(0.0f, (-(i  * 0.1f)) + 0.1f, 0.0f));
-
-						ServerList->AddButton(defaultButton, _pClient->m_vecServerAddr[i].serverName);
-
-						float pixelX = (0.0f + 1.22f) * 0.5 * glutGet(GLUT_WINDOW_WIDTH);
-						float pixelY = ((1.45f) - i * 0.125) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
-						std::string finalOut = _pClient->m_vecServerAddr[i].serverName + " - " + ToString(_pClient->m_vecServerAddr[i].ServerAddr) + " - " + ToString(_pClient->m_vecServerAddr[i].playerNum) + "/4 players";
-						TextLabel* temp = new TextLabel(finalOut, "Resources/Fonts/arial.ttf", { pixelX , pixelY });
-						temp->SetScale(0.5f);
-
-						m_servervec.insert(std::pair< std::string, TextLabel* >(_pClient->m_vecServerAddr[i].serverName, temp));
-						//m_servers.push_back(temp);
+						if (_pClient->m_vecServerAddr[i].serverName == chosen)
+						{
+							NameEnter = true;
+							iServerNum = i;
+						}
 					}
 				}
-				time = glutGet(GLUT_ELAPSED_TIME);
 			}
-
-			MPProcess();
-
-			if (_pClient->m_vecServerAddr.size() == 0)
+			else
 			{
-				//std::cout << "No servers found" << std::endl;
-				//mainType = MAIN;
+				m_ServerName->Process();
+				if (m_confirm->CheckCollision() && CInput::GetInstance().GetMouseState(0) == INPUT_HOLD && !m_ServerName->GetText().empty())
+				{
+					ServerName = m_ServerName->GetText();
+					_pClient->SetName(ServerName);
+					_pClient->SetServer(iServerNum);
+					mainType = LOBBY;
+				}
 			}
-
 		}
 		break;
 
@@ -305,6 +339,53 @@ void CSceneManager::MainProcess()
 		case LOBBY:
 		{
 			MPProcess();
+		
+			static float time = glutGet(GLUT_ELAPSED_TIME);
+			float timetime = glutGet(GLUT_ELAPSED_TIME) - time;
+
+
+			if (timetime > 250)
+			{
+				std::vector<std::string> m_players;
+				switch (_eNetworkEntityType)
+				{
+				case CLIENT:
+					for (auto i: _pClient->m_pConnectedPlayers)
+					{
+						m_players.push_back(i.first);
+
+						m_servervec.clear();
+						for (int i = 0; i < m_players.size(); i++)
+						{
+							float pixelX = (0.0f + 1.22f) * 0.5 * glutGet(GLUT_WINDOW_WIDTH);
+							float pixelY = ((1.45f) - i * 0.125) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
+							TextLabel* temp = new TextLabel(m_players[i], "Resources/Fonts/arial.ttf", { pixelX , pixelY });
+							temp->SetScale(0.5f);
+							m_servervec.insert(std::pair< std::string, TextLabel* >(m_players[i], temp));
+						}
+					}
+					break;
+				case SERVER:
+					for (auto it = _pServer->m_pConnectedClients->begin(); it != _pServer->m_pConnectedClients->end(); ++it)
+					{
+						m_players.push_back(it->second.m_strName);
+					}
+
+					m_servervec.clear();
+					for (int i = 0; i < m_players.size(); i++)
+					{
+						float pixelX = (0.0f + 1.22f) * 0.5 * glutGet(GLUT_WINDOW_WIDTH);
+						float pixelY = ((1.45f) - i * 0.125) * 0.5 * glutGet(GLUT_WINDOW_HEIGHT);
+						TextLabel* temp = new TextLabel(m_players[i], "Resources/Fonts/arial.ttf", { pixelX , pixelY });
+						temp->SetScale(0.5f);
+						m_servervec.insert(std::pair< std::string, TextLabel* >(m_players[i], temp));
+					}
+					break;
+				default:
+					break;
+				}
+				time = glutGet(GLUT_ELAPSED_TIME);
+			}
 		}
 		break;
 		case SETTING:
@@ -425,6 +506,7 @@ void CSceneManager::MainProcess()
 		}
 		else if (tempselection == "joinButton")
 		{
+			NameEnter = false;
 			static bool isStarted = false;
 			if (!isStarted)
 			{
@@ -604,8 +686,8 @@ void CSceneManager::MPProcess()
 
 				if (fCount > fTime + 0.1666f)
 				{
-					_pServer->CheckAlive();
-					_pServer->UpdateWorld();
+					//_pServer->CheckAlive();
+					//_pServer->UpdateWorld();
 
 					fTime = fCount;
 				}

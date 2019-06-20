@@ -64,6 +64,9 @@ public:
 	//Qs 2: Function to add clients to the map.
 
 	void SetName(std::string _name) { m_name = _name; }
+	
+	std::map<std::string, TClientDetails>* m_pConnectedClients;
+
 private:
 	bool AddClient(std::string _strClientName);
 
@@ -82,7 +85,6 @@ private:
 
 	//Qs 2 : Make a map to hold the details of all the client who have connected. 
 	//The structure maps client addresses to client details
-	std::map<std::string, TClientDetails>* m_pConnectedClients;
 	
 	//A workQueue to distribute messages between the main thread and Receive thread.
 	CWorkQueue<char*>* m_pWorkQueue;

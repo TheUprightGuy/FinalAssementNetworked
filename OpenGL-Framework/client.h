@@ -51,6 +51,9 @@ public:
 	virtual bool Initialise(); //Implicit in the intialization is the creation and binding of the socket
 	virtual bool QueryServerList();
 
+	void SetServer(int _iIndex);
+	void SetName(std::string _name) { m_name = _name; }
+
 	virtual bool SendData(char* _pcDataToSend);
 	virtual void ReceiveData(char* _pcBufferToReceiveData);
 	virtual void ProcessData(char* _pcDataReceived);
@@ -64,6 +67,7 @@ public:
 	bool BroadcastForServers();
 
 	std::vector<BroadCastPacket> m_vecServerAddr;
+	std::map<std::string, std::string> m_pConnectedPlayers;
 private:
 	// Question 7 : Broadcast to Detect Servers
 	void ReceiveBroadcastMessages(char* _pcBufferToReceiveData);
@@ -80,10 +84,11 @@ private:
 	//A workQueue to distribute messages between the main thread and Receive thread.
 	CWorkQueue<std::string>* m_pWorkQueue;
 
-	std::map<std::string, std::string> m_pConnectedPlayers;
 	//Question 7
 	//A vector to hold all the servers found after broadcasting
 	bool m_bDoBroadcast;
+
+	std::string m_name;
 };
 
 #endif

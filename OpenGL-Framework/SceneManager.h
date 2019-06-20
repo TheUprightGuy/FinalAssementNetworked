@@ -117,7 +117,9 @@ private:
 	
 	CLight* myLight;
 
+	std::vector<ServerButtons> m_clients;
 	std::vector<ServerButtons> m_servers;
+
 	std::map<std::string, TextLabel*> m_servervec;
 	//Multiplayer stuffs
 	char* _pcPacketData;

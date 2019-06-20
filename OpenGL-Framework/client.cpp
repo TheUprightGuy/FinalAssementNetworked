@@ -220,6 +220,9 @@ bool CClient::QueryServerList()
 		std::cout << "Attempting to connect to server at " << _strServerAddress << std::endl;*/
 		//std::string _strServerAddress = ToString(m_vecServerAddr[_uiServerIndex]);
 
+		m_bDoBroadcast = false;
+		m_pClientSocket->DisableBroadcast();
+
 		return true;
 	}
 
@@ -227,6 +230,19 @@ bool CClient::QueryServerList()
 	m_pClientSocket->DisableBroadcast();
 
 	return false;
+}
+
+void CClient::SetServer(int _iIndex)
+{
+	m_ServerSocketAddress.sin_family = AF_INET;
+	m_ServerSocketAddress.sin_port = m_vecServerAddr[_iIndex].ServerAddr.sin_port;
+	m_ServerSocketAddress.sin_addr.S_un.S_addr = m_vecServerAddr[_iIndex].ServerAddr.sin_addr.S_un.S_addr;
+	std::string _strServerAddress = ToString(m_vecServerAddr[_iIndex].ServerAddr);
+	std::cout << "Attempting to connect to server at " << _strServerAddress << std::endl; 
+
+	TPacket _packet;
+	_packet.Serialize(HANDSHAKE, const_cast<char*>(m_name.c_str())); 
+	SendData(_packet.PacketData);
 }
 
 bool CClient::BroadcastForServers()

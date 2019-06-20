@@ -250,23 +250,26 @@ void CServer::ProcessData(char* _pcDataReceived)
 	case HANDSHAKE:
 	{
 		std::cout << "Server received a handshake message " << std::endl;
+
+		_packetToSend.Serialize(HANDSHAKE, _packetRecvd.MessageContent);
+		SendToAll(_packetToSend.PacketData);
+
 		if (AddClient(_packetRecvd.MessageContent))
 		{
 			TPacket _Accepted;
-			_Accepted.Serialize(DATA, "Joined Successfully. Currently Online:");
-			SendData(_Accepted.PacketData);
+			//_Accepted.Serialize(DATA, "Joined Successfully. Currently Online:");
+			//SendData(_Accepted.PacketData);
 
 			for (auto it = m_pConnectedClients->begin(); it != m_pConnectedClients->end(); ++it)
 			{
-				_Accepted.Serialize(DATA, const_cast<char*>(it->second.m_strName.c_str() ) );
+				_Accepted.Serialize(HANDSHAKE, const_cast<char*>(it->second.m_strName.c_str() ) );
 				SendData(_Accepted.PacketData);
 			}
 
-			_Accepted.Serialize(DATA, "\n");
-			SendData(_Accepted.PacketData);
+			//_Accepted.Serialize(DATA, "\n");
+			//SendData(_Accepted.PacketData);
 
-			_packetToSend.Serialize(HANDSHAKE, _packetRecvd.MessageContent);
-			SendToAll(_packetToSend.PacketData);
+			
 		}
 		break;
 	}
@@ -296,7 +299,7 @@ void CServer::ProcessData(char* _pcDataReceived)
 	}
 	case KEEPALIVE:
 		m_pConnectedClients->at(ToString(m_ClientAddress)).m_bIsActive = true;
-		std::cout << m_pConnectedClients->at(ToString(m_ClientAddress)).m_strName << " checked in." << std::endl;
+		//std::cout << m_pConnectedClients->at(ToString(m_ClientAddress)).m_strName << " checked in." << std::endl;
 		break;
 	case PLAYER_UPDATE:
 	{

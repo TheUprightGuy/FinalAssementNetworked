@@ -18,7 +18,7 @@ public:
 
 	std::string GetSelection()
 	{
-		std::string selected;
+		std::string selected = "";
 		std::map<std::string, CButton*>::const_iterator it; // declare an iterator
 		it = m_pMenu.begin(); // assign it to the start of the vector
 		while (it != m_pMenu.end()) // while it hasn't reached the end
