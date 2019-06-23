@@ -110,7 +110,8 @@ private:
 	CButton* m_confirm;
 	CTextBox* m_ServerName;
 
-	
+	CButton* m_start;
+
 	CTextBox* m_inputPort;
 	MenuType mainType;
 	bool bPaused;

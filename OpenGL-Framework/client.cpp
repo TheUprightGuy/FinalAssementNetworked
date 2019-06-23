@@ -226,9 +226,6 @@ bool CClient::QueryServerList()
 		return true;
 	}
 
-	m_bDoBroadcast = false;
-	m_pClientSocket->DisableBroadcast();
-
 	return false;
 }
 
@@ -275,7 +272,7 @@ void CClient::ReceiveBroadcastMessages(char* _pcBufferToReceiveData)
 {
 	//set a timer on the socket for one second
 	struct timeval timeValue;
-	timeValue.tv_sec = 50;
+	timeValue.tv_sec = 100;
 	timeValue.tv_usec = 0;
 	setsockopt(m_pClientSocket->GetSocketHandle(), SOL_SOCKET, SO_RCVTIMEO,
 		(char*)&timeValue, sizeof(timeValue));
@@ -481,6 +478,11 @@ void CClient::ProcessData(char* _pcDataReceived)
 		ss >> playerName;
 
 		std::cout << ss.str() << std::endl;
+		break;
+	}
+	case COMMAND:
+	{
+		ServerRequestStart = true;
 		break;
 	}
 	default:

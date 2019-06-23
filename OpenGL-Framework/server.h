@@ -54,6 +54,7 @@ public:
 	virtual bool SendToAll(char* _pcDataToSend);
 	virtual void CheckAlive();
 	virtual void UpdateWorld();
+	virtual void SendStartSignal();
 
 	virtual void ReceiveData(char* _pcBufferToReceiveData);
 	virtual void ProcessData(char* _pcDataReceived);

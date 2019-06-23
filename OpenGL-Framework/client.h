@@ -68,6 +68,8 @@ public:
 
 	std::vector<BroadCastPacket> m_vecServerAddr;
 	std::map<std::string, std::string> m_pConnectedPlayers;
+
+	bool ServerRequestStart = false;
 private:
 	// Question 7 : Broadcast to Detect Servers
 	void ReceiveBroadcastMessages(char* _pcBufferToReceiveData);

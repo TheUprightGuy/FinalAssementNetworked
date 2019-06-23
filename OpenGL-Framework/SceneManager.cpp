@@ -104,9 +104,13 @@ void CSceneManager::Init()
 	defaultButton->Scale(glm::vec3(0.12f, 0.07f, 0.0f));
 	defaultButton->Translate(glm::vec3(-0.15f, -0.19f, 0.0f));
 
-	m_confirm  = new CButton("Resources/enter.png");
+	m_confirm = new CButton("Resources/enter.png");
 	m_confirm->Scale(glm::vec3(0.15f, 0.07f, 0.0f));
 	m_confirm->Translate(glm::vec3(0.0f, -0.19f, 0.0f));
+
+	m_start = new CButton("Resources/enter.png");
+	m_start->Scale(glm::vec3(0.15f, 0.07f, 0.0f));
+	m_start->Translate(glm::vec3(0.0f, -0.21f, 0.0f));
 
 	m_ServerName = new CTextBox("Resources/empty.png", glm::vec2(0.0f, 0.0f), "Enter Server Name");
 	m_ServerName->Scale(glm::vec3(0.3f, 0.1f, 0.0f));
@@ -198,6 +202,10 @@ void CSceneManager::Render()
 			{
 				i.second->Render();
 			}
+			if (_eNetworkEntityType == SERVER)
+			{
+				m_start->Render();
+			}
 			break;
 		case SETTING:
 			break;
@@ -260,7 +268,7 @@ void CSceneManager::MainProcess()
 				float timetime = glutGet(GLUT_ELAPSED_TIME) - time;
 
 
-				if (timetime > 250)
+				if (timetime > 100)
 				{
 					//mainType = CLIENTCHOOSE;
 					if (_pClient->QueryServerList())
@@ -364,6 +372,12 @@ void CSceneManager::MainProcess()
 							m_servervec.insert(std::pair< std::string, TextLabel* >(m_players[i], temp));
 						}
 					}
+
+					if (_pClient->ServerRequestStart)
+					{
+						i_Play = 1;
+					}
+
 					break;
 				case SERVER:
 					for (auto it = _pServer->m_pConnectedClients->begin(); it != _pServer->m_pConnectedClients->end(); ++it)
@@ -380,6 +394,13 @@ void CSceneManager::MainProcess()
 						temp->SetScale(0.5f);
 						m_servervec.insert(std::pair< std::string, TextLabel* >(m_players[i], temp));
 					}
+
+					if (m_start->CheckCollision() && CInput::GetInstance().GetMouseState(0) == INPUT_HOLD && _pServer->m_pConnectedClients->size() >= 2)
+					{
+						_pServer->SendStartSignal();
+						i_Play = 1;
+					}
+
 					break;
 				default:
 					break;

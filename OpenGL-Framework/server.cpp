@@ -162,7 +162,7 @@ void CServer::UpdateWorld()
 	{
 		std::ostringstream oss;
 		oss << it->second.m_strName;
-		oss << " ";
+		oss << "/";
 		oss << it->second.m_ClientData;
 
 		std::cout << oss.str() << std::endl;
@@ -177,10 +177,14 @@ void CServer::UpdateWorld()
 		_packet.Serialize(WORLD_UPDATE, const_cast<char*>(_pcToSend)); //Hardcoded username; change to name as taken in via user input.
 		SendToAll(_packet.PacketData); //Send game data to server
 	}
-	
-	
-	
 
+}
+
+void CServer::SendStartSignal()
+{
+	TPacket _packet;
+	_packet.Serialize(COMMAND, const_cast<char*>("START")); //Hardcoded username; change to name as taken in via user input.
+	SendToAll(_packet.PacketData); //Send game data to server
 }
 
 void CServer::ReceiveData(char* _pcBufferToReceiveData)
@@ -304,9 +308,14 @@ void CServer::ProcessData(char* _pcDataReceived)
 	case PLAYER_UPDATE:
 	{
 		std::string str(_packetRecvd.MessageContent);
-		
 		std::string _clientAdress = ToString(m_ClientAddress);
 		m_pConnectedClients->at(_clientAdress).m_ClientData = str;
+
+		int foundX = str.find_first_of("/");
+		int foundY = str.find("/", foundX + 1);
+		int foundZ = str.find("/", foundY + 1);
+		int foundRot = str.find("/", foundZ + 1);
+
 
 		break;
 	}
